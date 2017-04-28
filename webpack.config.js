@@ -54,9 +54,23 @@ const rules = [
   {
     test: /\.(js|jsx)$/,
     exclude: /node_modules/,
-    use: [
-      'babel-loader',
-    ],
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          'es2015',
+          'react',
+          'stage-0',
+        ],
+        env: {
+          development: {
+            presets: [
+              'react-hmre',
+            ],
+          },
+        },
+      },
+    },
   },
   {
     test: /\.(png|gif|jpg|svg)$/,
