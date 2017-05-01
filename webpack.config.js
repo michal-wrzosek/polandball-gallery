@@ -147,7 +147,7 @@ module.exports = {
   devtool: isProduction ? false : 'source-map',
   context: sourcePath,
   entry: {
-    js: './index.js',
+    js: ['babel-polyfill', './index.js'],
   },
   output: {
     path: buildPath,

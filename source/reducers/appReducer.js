@@ -1,11 +1,6 @@
 import { Map } from 'immutable';
 
-// import {} from '../actions/app';
-
-const initialState = Map({
-  imgurClientId: '7b1f7a9c25b701b',
-  imgurHttpEndpoint: 'https://api.imgur.com/3/',
-});
+const initialState = Map({});
 
 const actionsMap = {};
 
