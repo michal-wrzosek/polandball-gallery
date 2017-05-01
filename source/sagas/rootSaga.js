@@ -1,20 +1,31 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
-import axios from 'axios';
+import {
+  fetchImages,
+} from '../api';
 import {
   GET_IMAGES,
   getImagesSucceeded,
   getImagesFailed,
-} from '../actions'
-
-const apiUrl = 'https://api.imgur.com/3/';
-axios.defaults.headers.common['Authorization'] = 'Client-ID 7b1f7a9c25b701b';
+  SEARCH,
+  searchSucceeded,
+  searchFailed,
+} from '../actions';
 
 export function* getImagesAsync(action) {
   try {
-    const response = yield call(axios.get, `${apiUrl}gallery/t/polandball`);
-    yield put(getImagesSucceeded(response.data));
+    const images = yield call(fetchImages);
+    yield put(getImagesSucceeded(images));
   } catch (e) {
     yield put(getImagesFailed(e.message));
+  }
+}
+
+export function* searchAsync(action) {
+  try {
+    const images = yield call(fetchImages, { search: action.searchPhrase });
+    yield put(searchSucceeded(images));
+  } catch (e) {
+    yield put(searchFailed(e.message));
   }
 }
 
@@ -22,8 +33,13 @@ export function* watchGetImages() {
   yield takeEvery(GET_IMAGES, getImagesAsync);
 }
 
+export function* watchSearch() {
+  yield takeEvery(SEARCH, searchAsync);
+}
+
 export default function* rootSaga() {
   yield [
     watchGetImages(),
+    watchSearch(),
   ]
 }

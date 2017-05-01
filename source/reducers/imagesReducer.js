@@ -1,12 +1,14 @@
 import Immutable, { List } from 'immutable';
 import {
   GET_IMAGES_SUCCEEDED,
+  SEARCH_SUCCEEDED,
 } from '../actions';
 
 const initialState = List();
 
 const actionsMap = {
   [GET_IMAGES_SUCCEEDED]: (state, action) => Immutable.fromJS(action.images),
+  [SEARCH_SUCCEEDED]: (state, action) => Immutable.fromJS(action.images),
 };
 
 export default function imagesReducer(state = initialState, action = {}) {

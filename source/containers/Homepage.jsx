@@ -1,9 +1,22 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import {
+  search
+} from '../actions';
+import SearchForm from '../components/SearchForm';
 import Images from '../components/Images';
 
 class Homepage extends Component {
+  constructor(props) {
+    super(props);
+    this.handleSearchFormSubmit = this.handleSearchFormSubmit.bind(this)
+  }
+
+  handleSearchFormSubmit(searchPhrase) {
+    this.props.dispatch(search(searchPhrase));
+  }
 
   render() {
     const {
@@ -14,6 +27,7 @@ class Homepage extends Component {
       <div>
         Homepage
         <div>
+          <SearchForm onSubmit={this.handleSearchFormSubmit} />
           <Images images={images} />
         </div>
       </div>
@@ -23,6 +37,7 @@ class Homepage extends Component {
 
 Homepage.propTypes = {
   images: ImmutablePropTypes.listOf(ImmutablePropTypes.map).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

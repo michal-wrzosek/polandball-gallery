@@ -16,11 +16,17 @@ class App extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const {
+      isLoading,
+      children,
+    } = this.props;
 
     return (
       <div className='App'>
         <Menu />
+        {isLoading === true &&
+          <p>LOADING!!!</p>
+        }
 
         <div className='Page'>
           { children }
@@ -31,8 +37,19 @@ class App extends Component {
 }
 
 App.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
   children: PropTypes.element.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect()(App);
+function mapStateToProps(state) {
+  const {
+    app,
+  } = state;
+
+  return {
+    isLoading: app.get('isLoading'),
+  }
+}
+
+export default connect(mapStateToProps)(App);
