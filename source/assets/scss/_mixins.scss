@@ -1,0 +1,35 @@
+@mixin mq-xs-only {
+  @media (max-width: #{$mq-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin mq-sm {
+  @media (min-width: #{$mq-sm}) {
+    @content;
+  }
+}
+
+@mixin mq-sm-only {
+  @media (min-width: #{$mq-sm}) and (max-width: #{$mq-md - 1}) {
+    @content;
+  }
+}
+
+@mixin mq-md {
+  @media (min-width: #{$mq-md}) {
+    @content;
+  }
+}
+
+@mixin mq-md-only {
+  @media (min-width: #{$mq-md}) and (max-width: #{$mq-lg - 1}) {
+    @content;
+  }
+}
+
+@mixin mq-lg {
+  @media (min-width: #{$mq-lg}) {
+    @content;
+  }
+}

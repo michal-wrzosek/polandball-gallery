@@ -8,6 +8,7 @@ import App from './containers/App';
 import Homepage from './views/Homepage';
 import Gallery from './views/Gallery';
 import NotFound from './components/NotFound';
+import './assets/scss/main.scss';
 
 const store = configureStore();
 
