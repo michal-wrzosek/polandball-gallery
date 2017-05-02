@@ -11,24 +11,30 @@ import {
   searchFailed,
 } from '../actions';
 
+// WORKERS
 export function* getImagesAsync(action) {
-  try {
-    const images = yield call(fetchImages);
-    yield put(getImagesSucceeded(images));
-  } catch (e) {
-    yield put(getImagesFailed(e.message));
+  const { response, error } = yield call(fetchImages);
+
+  if (response) {
+    yield put(getImagesSucceeded(response.images));
+  } else {
+    yield put(getImagesFailed(error));
   }
 }
 
 export function* searchAsync(action) {
-  try {
-    const images = yield call(fetchImages, { search: action.searchPhrase });
-    yield put(searchSucceeded(images));
-  } catch (e) {
-    yield put(searchFailed(e.message));
+  const {response, error } = yield call(fetchImages, {
+    searchPhrase: action.searchPhrase
+  });
+
+  if (response) {
+    yield put(searchSucceeded(response.images));
+  } else {
+    yield put(searchFailed(error));
   }
 }
 
+// WATCHERS
 export function* watchGetImages() {
   yield takeEvery(GET_IMAGES, getImagesAsync);
 }
@@ -37,6 +43,8 @@ export function* watchSearch() {
   yield takeEvery(SEARCH, searchAsync);
 }
 
+
+// ROOT SAGA
 export default function* rootSaga() {
   yield [
     watchGetImages(),

@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const imageUrl = '';
-const apiUrl = 'https://api.imgur.com/3/';
+export const apiUrl = 'https://api.imgur.com/3/';
 const clientId = '7b1f7a9c25b701b';
 
 axios.defaults.headers.common['Authorization'] = `Client-ID ${clientId}`;
@@ -32,10 +31,19 @@ const parseFetchImagesResponse = search => search.data.map((item) => {
   return item.is_album ? parseGalleryAlbum(item) : parseImage(item);
 })
 
-export const fetchImages = ({ searchPhrase = '', page = 0 }) => {
-  const query = ['polandball', ...searchPhrase.match(/\S+/g)].join('+');
+const createSearchQuery = (searchPhrase) => {
+  return [
+    'polandball',
+    ...(searchPhrase.match(/\S+/g) || [])
+  ].join('+');
+}
+
+export const fetchImages = ({ searchPhrase = '', page = 0 } = {}) => {
+  const query = createSearchQuery(searchPhrase);
   return axios
-    .get(`${apiUrl}gallery/search/?q_all=${query}page=${page}`)
+    .get(`${apiUrl}gallery/search/?q_all=${query}&page=${page}`)
     .then(response => response.data)
-    .then(data => parseFetchImagesResponse(data));
+    .then(data => parseFetchImagesResponse(data))
+    .then(images => ({ response: { images } }))
+    .catch(error => ({ error }));
 };
