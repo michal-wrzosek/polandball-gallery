@@ -1,5 +1,4 @@
 import { Map } from 'immutable';
-
 import {
   GET_IMAGES,
   GET_IMAGES_SUCCEEDED,
@@ -14,12 +13,12 @@ const initialState = Map({
 });
 
 const actionsMap = {
-  [GET_IMAGES]: (state, action) => state.set('isLoading', true),
-  [GET_IMAGES_SUCCEEDED]: (state, action) => state.set('isLoading', false),
-  [GET_IMAGES_FAILED]: (state, action) => state.set('isLoading', false),
-  [SEARCH]: (state, action) => state.set('isLoading', true),
-  [SEARCH_SUCCEEDED]: (state, action) => state.set('isLoading', false),
-  [SEARCH_FAILED]: (state, action) => state.set('isLoading', false),
+  [GET_IMAGES]: (state) => state.set('isLoading', true),
+  [GET_IMAGES_SUCCEEDED]: (state) => state.set('isLoading', false),
+  [GET_IMAGES_FAILED]: (state) => state.set('isLoading', false),
+  [SEARCH]: (state) => state.set('isLoading', true),
+  [SEARCH_SUCCEEDED]: (state) => state.set('isLoading', false),
+  [SEARCH_FAILED]: (state) => state.set('isLoading', false),
 };
 
 export default function appReducer(state = initialState, action = {}) {

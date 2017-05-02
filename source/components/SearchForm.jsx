@@ -19,30 +19,26 @@ class SearchForm extends Component {
     this.props.onSubmit(this.state.searchPhrase);
   }
 
-  render () {
+  render() {
     const b = 'search-form';
-
-    const {
-      onSubmit,
-    } = this.props;
 
     return (
       <form
-        className={bem(b)}
-        onSubmit={this.handleSearchSubmit}
+        className={ bem(b) }
+        onSubmit={ this.handleSearchSubmit }
       >
 
         {/* INPUT FIELD */}
         <input
-          className={bem(b, 'input-field')}
-          onChange={this.handleInputChange}
-          type="text"
+          className={ bem(b, 'input-field') }
+          onChange={ this.handleInputChange }
+          type='text'
         />
 
         {/* SUBMIT BUTTON */}
         <button
-          className={bem(b, 'submit-btn')}
-          type="submit"
+          className={ bem(b, 'submit-btn') }
+          type='submit'
         >
           Search
         </button>

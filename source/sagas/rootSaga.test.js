@@ -2,31 +2,34 @@ import { describe, it } from 'mocha';
 import assert from 'assert';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
-import { fetchImages } from '../api';
 import {
-  GET_IMAGES,
+  fetchGalleries,
+  fetchGalleryComments,
+  fetchGalleryAlbumImages,
+} from '../api';
+import {
+  GET_GALLERIES,
   SEARCH,
-  getImagesSucceeded,
-  getImagesFailed,
+  getGalleriesSucceeded,
+  getGalleriesFailed,
   searchSucceeded,
   searchFailed,
 } from '../actions';
 import {
-  watchGetImages,
+  watchGetGalleries,
   watchSearch,
-  getImagesAsync,
+  getGalleriesAsync,
   searchAsync,
 } from './rootSaga';
 
 describe('sagas/rootSaga', () => {
-  
-  describe('watchGetImages()', () => {
-    const gen = watchGetImages();
+  describe('watchGetGalleries()', () => {
+    const gen = watchGetGalleries();
 
-    it('should takeEvery GET_IMAGES actions and call getImagesAsync()', () => {
+    it('should takeEvery GET_GALLERIES actions and call getGalleriesAsync()', () => {
       assert.deepEqual(
         gen.next().value,
-        takeEvery(GET_IMAGES, getImagesAsync)
+        takeEvery(GET_GALLERIES, getGalleriesAsync)
       );
     });
 
@@ -38,14 +41,14 @@ describe('sagas/rootSaga', () => {
     });
   });
 
-  describe('getImagesAsync()', () => {
+  describe('getGalleriesAsync()', () => {
     const data = {};
-    data.gen = cloneableGenerator(getImagesAsync)();
+    data.gen = cloneableGenerator(getGalleriesAsync)();
 
-    it('should call fetchImages()', () => {
+    it('should call fetchGalleries()', () => {
       assert.deepEqual(
         data.gen.next().value,
-        call(fetchImages)
+        call(fetchGalleries)
       );
     });
 
@@ -53,23 +56,25 @@ describe('sagas/rootSaga', () => {
     describe('when api works fine', () => {
       const successfulResponse = {
         response: {
-          images: [
+          galleries: [
             {
               id: 'zzfw',
-              width: 20,
-              height: 20,
-              url: 'http://example.com/zzz.jpg',
-              thumbUrl: 'http://example.com/zzzs.jpg',
+              isAlbum: true,
+              coverId: 'zzz',
+              coverWidth: 20,
+              coverHeight: 20,
+              coverUrl: 'http://example.com/zzz.jpg',
+              coverThumbUrl: 'http://example.com/zzzs.jpg',
             },
           ],
         },
       };
 
-      it('should dispatch getImagesSucceeded() action', () => {
+      it('should dispatch getGalleriesSucceeded() action', () => {
         data.clone = data.gen.clone();
         assert.deepEqual(
           data.gen.next(successfulResponse).value,
-          put(getImagesSucceeded(successfulResponse.response.images))
+          put(getGalleriesSucceeded(successfulResponse.response.galleries))
         );
       });
 
@@ -84,12 +89,12 @@ describe('sagas/rootSaga', () => {
     describe('when api throw an error', () => {
       const errorResponse = { error: {} };
 
-      it('should dispatch getImagesFailed() action', () => {
+      it('should dispatch getGalleriesFailed() action', () => {
         assert.deepEqual(
           data.clone.next(errorResponse).value,
-          put(getImagesFailed(errorResponse.error))
+          put(getGalleriesFailed(errorResponse.error))
         );
-      })
+      });
 
       it('should be done', () => {
         assert.deepEqual(
@@ -121,15 +126,15 @@ describe('sagas/rootSaga', () => {
   describe('searchAsync()', () => {
     const action = {
       type: SEARCH,
-      searchPhrase: 'test search'
+      searchPhrase: 'test search',
     };
     const data = {};
     data.gen = cloneableGenerator(searchAsync)(action);
 
-    it('should call fetchImages() with searchPrase', () => {
+    it('should call fetchGalleries() with searchPrase', () => {
       assert.deepEqual(
         data.gen.next().value,
-        call(fetchImages, { searchPhrase: 'test search' })
+        call(fetchGalleries, { searchPhrase: 'test search' })
       );
     });
 
@@ -137,13 +142,15 @@ describe('sagas/rootSaga', () => {
     describe('when api works fine', () => {
       const successfulResponse = {
         response: {
-          images: [
+          galleries: [
             {
               id: 'zzfw',
-              width: 20,
-              height: 20,
-              url: 'http://example.com/zzz.jpg',
-              thumbUrl: 'http://example.com/zzzs.jpg',
+              isAlbum: false,
+              coverId: 'zzz',
+              coverWidth: 200,
+              coverHeight: 300,
+              coverUrl: 'http://example.com/zzz.jpg',
+              coverThumbUrl: 'http://example.com/zzzs.jpg',
             },
           ],
         },
@@ -153,7 +160,7 @@ describe('sagas/rootSaga', () => {
         data.clone = data.gen.clone();
         assert.deepEqual(
           data.gen.next(successfulResponse).value,
-          put(searchSucceeded(successfulResponse.response.images))
+          put(searchSucceeded(successfulResponse.response.galleries))
         );
       });
 
@@ -173,7 +180,7 @@ describe('sagas/rootSaga', () => {
           data.clone.next(errorResponse).value,
           put(searchFailed(errorResponse.error))
         );
-      })
+      });
 
       it('should be done', () => {
         assert.deepEqual(

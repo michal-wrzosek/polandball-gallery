@@ -1,5 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import createSagaMiddleware from 'redux-saga'
+import { browserHistory } from 'react-router';
+import { routerMiddleware } from 'react-router-redux';
+import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
 import rootReducer from './reducers/rootReducer';
 import rootSaga from './sagas/rootSaga';
@@ -11,14 +13,21 @@ export default function configureStore() {
   const sagaMiddleware = createSagaMiddleware();
 
   if (isProduction) {
-    const middleware = applyMiddleware(sagaMiddleware);
+    const middleware = applyMiddleware(
+      routerMiddleware(browserHistory),
+      sagaMiddleware
+    );
 
     store = createStore(
       rootReducer,
       middleware
     );
   } else {
-    const middleware = applyMiddleware(sagaMiddleware, logger);
+    const middleware = applyMiddleware(
+      logger,
+      routerMiddleware(browserHistory),
+      sagaMiddleware
+    );
 
     /* eslint-disable no-underscore-dangle */
     const enhancer = compose(

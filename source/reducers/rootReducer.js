@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import appReducer from './appReducer';
-import imagesReducer from './imagesReducer';
+import galleriesReducer from './galleriesReducer';
 import routerReducer from './routerReducer';
 
 export default combineReducers({
   app: appReducer,
-  images: imagesReducer,
+  galleries: galleriesReducer,
   routing: routerReducer,
 });

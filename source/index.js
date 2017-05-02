@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import { Router, IndexRoute, Route, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import configureStore from './store';
-import routes from './routes';
 import App from './containers/App';
-import Homepage from './containers/Homepage';
+import Homepage from './views/Homepage';
+import Gallery from './views/Gallery';
 import NotFound from './components/NotFound';
 
 const store = configureStore();
@@ -31,9 +31,9 @@ const history = syncHistoryWithStore(browserHistory, store, {
 render(
   <Provider store={ store }>
     <Router history={ history }>
-      <Route path={ routes.HOMEPAGE } component={ App }>
+      <Route path='/' component={ App }>
         <IndexRoute component={ Homepage } />
-        <Route path={ routes.HOMEPAGE } component={ Homepage } />
+        <Route path='/galleries/:id' component={ Gallery } />
         <Route path='*' component={ NotFound } />
       </Route>
     </Router>

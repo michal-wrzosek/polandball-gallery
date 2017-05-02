@@ -2,17 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  getImages,
+  getGalleries,
 } from '../actions';
 import Menu from './Menu';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
-    this.props.dispatch(getImages());
+    this.props.dispatch(getGalleries());
   }
 
   render() {
@@ -49,7 +46,7 @@ function mapStateToProps(state) {
 
   return {
     isLoading: app.get('isLoading'),
-  }
+  };
 }
 
 export default connect(mapStateToProps)(App);
