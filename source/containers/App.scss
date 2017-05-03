@@ -1,4 +1,11 @@
 .app {
+  width: 100%;
+  padding-top: 20px;
+
+  @include mq-md {
+    width: $mq-md;
+    margin: 0 auto;
+  }
 
   &__menu {
 

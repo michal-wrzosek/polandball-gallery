@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IndexLink } from 'react-router';
 import bem from '../helpers/bem';
 
 const Menu = ({ handleClick }) => {
@@ -10,15 +9,15 @@ const Menu = ({ handleClick }) => {
     <ul className={ bem(b) }>
       <li className={ bem(b, 'link') }>
         <a
-          onClick={ handleClick.bind(null, '/') }
+          onClick={ () => handleClick('/') }
           className={ bem(b, 'link-a') }
         >
-          Homepage
+          Polandballs
         </a>
       </li>
     </ul>
   );
-}
+};
 
 Menu.propTypes = {
   handleClick: PropTypes.func.isRequired,

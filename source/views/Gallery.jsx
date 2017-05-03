@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import bem from '../helpers/bem';
 import {
   getGallery,
   getGalleryComments,
@@ -16,33 +17,50 @@ class Gallery extends Component {
       albumImages,
     } = this.props;
 
+    const b = 'gallery';
+
     return (
-      <div>
-        <div>
-          { gallery.get('id') }
-        </div>
-        <div>
+      <div className={ bem(b) }>
+
+        {/* IMAGE */}
+        <div className={ bem(b, 'image') }>
           { gallery.get('isAlbum') === false &&
             <img
               src={ gallery.get('coverUrl') }
               alt=''
+              className={ bem(b, 'image-img') }
             />
           }
         </div>
-        <div>
+
+        {/* ALBUM IMAGES */}
+        <div className={ bem(b, 'album-images') }>
           {albumImages.map(image =>
-            <div key={ image.get('id') }>
+            <div
+              key={ image.get('id') }
+              className={ bem(b, 'album-image') }
+            >
               <img
                 src={ image.get('url') }
                 alt=''
+                className={ bem(b, 'album-image-img') }
+                width={ image.get('width') }
+                height={ image.get('height') }
               />
             </div>
           )}
         </div>
-        <div>
-          <p>Comments:</p>
+
+        {/* COMMENTS */}
+        <div className={ bem(b, 'comments') }>
+          <div className={ bem(b, 'comments-header') }>
+            Comments:
+          </div>
           {comments.map(comment =>
-            <div key={ comment.get('id') }>
+            <div
+              key={ comment.get('id') }
+              className={ bem(b, 'comment') }
+            >
               { comment.get('comment') }
             </div>
           )}
@@ -56,7 +74,6 @@ Gallery.propTypes = {
   gallery: ImmutablePropTypes.map.isRequired,
   comments: ImmutablePropTypes.list.isRequired,
   albumImages: ImmutablePropTypes.list.isRequired,
-  dispatch: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {

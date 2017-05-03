@@ -4,8 +4,6 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 import {
   fetchGalleries,
-  fetchGalleryComments,
-  fetchGalleryAlbumImages,
 } from '../api';
 import {
   GET_GALLERIES,

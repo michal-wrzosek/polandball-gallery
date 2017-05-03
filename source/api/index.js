@@ -13,7 +13,7 @@ const createGallery = ({
   isAlbum,
   coverId,
   coverWidth,
-  coverHeight
+  coverHeight,
 }) => ({
   id,
   isAlbum,
@@ -81,7 +81,7 @@ const parseImage = image => createImage({
 });
 
 const parseFetchGalleriesResponse = galleries => galleries
-  .map(i => i.is_album ? parseGalleryAlbum(i) : parseGalleryImage(i));
+  .map(i => (i.is_album ? parseGalleryAlbum(i) : parseGalleryImage(i)));
 
 const parseFetchGalleryComments = comments => comments
   .map(comment => createComment(parseComment(comment)));
@@ -112,7 +112,7 @@ export const fetchGalleryComments = (id, isAlbum) => {
     .then(response => response.data.data)
     .then(comments => parseFetchGalleryComments(comments))
     .then(comments => ({ response: { comments } }))
-    .catch(error => ({ error }))
+    .catch(error => ({ error }));
 };
 
 export const fetchGalleryAlbumImages = id => {
@@ -121,5 +121,5 @@ export const fetchGalleryAlbumImages = id => {
     .then(response => response.data.data)
     .then(galleryAlbum => parseFetchGalleryAlbumImages(galleryAlbum))
     .then(images => ({ response: { images } }))
-    .catch(error => ({ error }))
+    .catch(error => ({ error }));
 };

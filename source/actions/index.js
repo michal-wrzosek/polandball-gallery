@@ -13,8 +13,10 @@ export const GET_GALLERY_ALBUM_IMAGES = 'GET_GALLERY_ALBUM_IMAGES';
 export const GET_GALLERY_ALBUM_IMAGES_SUCCEEDED = 'GET_GALLERY_ALBUM_IMAGES_SUCCEEDED';
 export const GET_GALLERY_ALBUM_IMAGES_FAILED = 'GET_GALLERY_ALBUM_IMAGES_FAILED';
 
-export const getGalleries = () => ({
+export const getGalleries = (page, searchPhrase) => ({
   type: GET_GALLERIES,
+  page,
+  searchPhrase,
 });
 
 export const getGalleriesSucceeded = (galleries) => ({

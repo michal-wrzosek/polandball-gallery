@@ -1,9 +1,11 @@
 const webpack = require('webpack');
 const path = require('path');
 
+
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const precss = require('precss');
 const autoprefixer = require('autoprefixer');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
@@ -112,7 +114,21 @@ if (isProduction) {
       test: /\.scss$/,
       loader: ExtractTextPlugin.extract({
         fallback: 'style-loader',
-        use: 'css-loader!postcss-loader!sass-loader',
+        use: [
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function () {
+                return [
+                  precss,
+                  autoprefixer,
+                ];
+              }
+            },
+          },
+          'sass-loader',
+        ],
       }),
     }
   );
@@ -130,13 +146,18 @@ if (isProduction) {
       exclude: /node_modules/,
       use: [
         'style-loader',
-        // Using source maps breaks urls in the CSS loader
-        // https://github.com/webpack/css-loader/issues/232
-        // This comment solves it, but breaks testing from a local network
-        // https://github.com/webpack/css-loader/issues/232#issuecomment-240449998
-        // 'css-loader?sourceMap',
-        'css-loader',
-        'postcss-loader',
+        'css-loader?sourceMap',
+        {
+          loader: 'postcss-loader',
+          options: {
+            plugins: function () {
+              return [
+                precss,
+                autoprefixer,
+              ];
+            }
+          },
+        },
         'sass-loader?sourceMap',
       ],
     }

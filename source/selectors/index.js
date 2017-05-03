@@ -1,8 +1,11 @@
 import { List } from 'immutable';
 
 export const getGallery = (state, id) => {
-  const listIndex = state.galleries.get('keys').get(id);
-  return state.galleries.get('list').get(listIndex);
+  if (state.galleries.get('keys').has(id)) {
+    const listIndex = state.galleries.get('keys').get(id);
+    return state.galleries.get('list').get(listIndex);
+  }
+  return false;
 };
 
 export const getGalleryComments = (state, id) =>

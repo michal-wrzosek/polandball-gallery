@@ -1,0 +1,33 @@
+.gallery-item {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 15px 15px;
+
+  @include mq-xs-only {
+    width: 50%;
+  }
+
+  @include mq-sm {
+    width: 25%;
+  }
+
+  @include mq-md {
+    width: 20%;
+  }
+
+  &__wrapper {
+    cursor: pointer;
+    background-color: #333333;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+}

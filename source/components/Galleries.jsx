@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Link } from 'react-router';
+import InfiniteScroll from 'redux-infinite-scroll';
 import bem from '../helpers/bem';
-import './Galleries.scss';
+import GalleryItem from './GalleryItem';
+import Loader from './../components/Loader';
 
 const Galleries = ({
   galleries,
   handleClick,
+  handleLoadMore,
 }) => {
   const b = 'galleries';
 
@@ -15,32 +17,37 @@ const Galleries = ({
     <div
       className={ bem(b) }
     >
-      {galleries.get('list').valueSeq().map(i =>
-        <div
-          key={ i.get('id') }
-          className={ bem(b, 'image') }
-        >
-          <img
-            src={ i.get('coverThumbUrl') }
-            alt=''
+      <InfiniteScroll
+        className={ bem(b, 'list') }
+        loadMore={ handleLoadMore }
+        hasMore={ galleries.get('hasMore') }
+        loadingMore={ galleries.get('isLoading') }
+        elementIsScrollable={ false }
+      >
+        {galleries.get('list').toArray().map(gallery =>
+          <GalleryItem
+            key={ gallery.get('id') }
+            gallery={ gallery }
+            handleClick={ handleClick }
           />
-          <a
-            onClick={ handleClick.bind(null, i.get('id')) }
-          >
-            { `${ i.get('id') } - ${ i.get('isAlbum') }` }
-          </a>
-        </div>
-      )}
+        )}
+      </InfiniteScroll>
+      {galleries.get('isLoading') === true &&
+        <Loader />
+      }
     </div>
   );
 };
 
 Galleries.propTypes = {
   galleries: ImmutablePropTypes.mapContains({
-    list: ImmutablePropTypes.list,
-    keys: ImmutablePropTypes.map,
+    list: ImmutablePropTypes.list.isRequired,
+    keys: ImmutablePropTypes.map.isRequired,
+    hasMore: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
   }).isRequired,
   handleClick: PropTypes.func.isRequired,
+  handleLoadMore: PropTypes.func.isRequired,
 };
 
 export default Galleries;

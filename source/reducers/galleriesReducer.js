@@ -1,6 +1,8 @@
-import Immutable, { Map } from 'immutable';
+import Immutable from 'immutable';
 import {
+  GET_GALLERIES,
   GET_GALLERIES_SUCCEEDED,
+  SEARCH,
   SEARCH_SUCCEEDED,
   GALLERY_OPENED,
   HOMEPAGE_OPENED,
@@ -14,16 +16,24 @@ const initialState = Immutable.fromJS({
   currentGallery: '',
   galleryComments: {},
   galleryAlbumImages: {},
+  currentPage: -1,
+  hasMore: true,
+  isLoading: false,
 });
 
 const actionsMap = {
+  [GET_GALLERIES]: (state) => state.merge({
+    isLoading: true,
+    currentPage: state.get('currentPage') + 1,
+  }),
+
   [GET_GALLERIES_SUCCEEDED]: (state, action) => {
     const newState = {
       ...state.toJS(),
-      list: [],
-      keys: {},
+      hasMore: action.galleries.length > 0,
+      isLoading: false,
     };
-    
+
     action.galleries.forEach(i => {
       if (!(i.id in newState.keys)) {
         newState.list.push(i);
@@ -33,13 +43,22 @@ const actionsMap = {
 
     return Immutable.fromJS(newState);
   },
+
+  [SEARCH]: (state, action) => state.merge({
+    isLoading: true,
+    currentPage: 0,
+    searchPhrase: action.searchPhrase,
+    list: [],
+    keys: {},
+  }),
+
   [SEARCH_SUCCEEDED]: (state, action) => {
-    const newState = state.merge({
+    const newState = {
       ...state.toJS(),
-      list: [],
-      keys: {},
-    });
-    
+      hasMore: action.galleries.length > 0,
+      isLoading: false,
+    };
+
     action.galleries.forEach(i => {
       if (!(i.id in newState.keys)) {
         newState.list.push(i);
@@ -49,21 +68,23 @@ const actionsMap = {
 
     return Immutable.fromJS(newState);
   },
+
   [GALLERY_OPENED]: (state, action) => state.set('currentGallery', action.id),
+
   [HOMEPAGE_OPENED]: (state) => state.set('currentGallery', ''),
-  [GET_GALLERY_COMMENTS_SUCCEEDED]: (state, action) =>
-    state.setIn(
-      ['galleryComments', action.id],
-      Immutable.fromJS(action.comments)
-    ),
-  [GET_GALLERY_ALBUM_IMAGES_SUCCEEDED]: (state, action) =>
-    state.setIn(
-      ['galleryAlbumImages', action.id],
-      Immutable.fromJS(action.images)
-    ),
+
+  [GET_GALLERY_COMMENTS_SUCCEEDED]: (state, action) => state.setIn(
+    ['galleryComments', action.id],
+    Immutable.fromJS(action.comments)
+  ),
+
+  [GET_GALLERY_ALBUM_IMAGES_SUCCEEDED]: (state, action) => state.setIn(
+    ['galleryAlbumImages', action.id],
+    Immutable.fromJS(action.images)
+  ),
 };
 
-export default function imagesReducer(state = initialState, action = {}) {
+export default function galleriesReducer(state = initialState, action = {}) {
   const fn = actionsMap[action.type];
   return fn ? fn(state, action) : state;
 }

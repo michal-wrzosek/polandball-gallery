@@ -2,6 +2,8 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  text-align: center;
+  margin-bottom: 20px;
 
   &__link {
 
@@ -9,5 +11,7 @@
 
   &__link-a {
     cursor: pointer;
+    font-size: 22px;
+    color: #FFFFFF;
   }
 }

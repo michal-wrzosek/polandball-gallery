@@ -1,6 +1,7 @@
-import { call, put, takeEvery, select } from 'redux-saga/effects';
+import { call, put, takeLatest, select, all } from 'redux-saga/effects';
 import {
   LOCATION_CHANGE,
+  push,
 } from 'react-router-redux';
 import {
   fetchGalleries,
@@ -30,8 +31,11 @@ import {
 
 
 // WORKERS
-export function* getGalleriesAsync() {
-  const { response, error } = yield call(fetchGalleries);
+export function* getGalleriesAsync(action) {
+  const { response, error } = yield call(fetchGalleries, {
+    page: action.page,
+    searchPhrase: action.searchPhrase,
+  });
 
   if (response) {
     yield put(getGalleriesSucceeded(response.galleries));
@@ -60,25 +64,37 @@ export function* logLocation(action) {
   }
 }
 
-export function* getGalleryCommentsAsync(action) {
-  yield put(getGalleryComments(action.id));
+export function* redirectIfGalleryNotExists(action) {
   const gallery = yield select(getGallery, action.id);
-  const { response, error } = yield call(
-    fetchGalleryComments,
-    action.id,
-    gallery.get('isAlbum')
-  );
-  
-  if (response) {
-    yield put(getGalleryCommentsSucceeded(action.id, response.comments))
-  } else {
-    yield put(getGalleryCommentsFailed(action.id, error))
+
+  if (gallery === false) {
+    yield put(push('/'));
+  }
+}
+
+export function* getGalleryCommentsAsync(action) {
+  const gallery = yield select(getGallery, action.id);
+
+  if (gallery) {
+    yield put(getGalleryComments(action.id));
+    const { response, error } = yield call(
+      fetchGalleryComments,
+      action.id,
+      gallery.get('isAlbum')
+    );
+
+    if (response) {
+      yield put(getGalleryCommentsSucceeded(action.id, response.comments));
+    } else {
+      yield put(getGalleryCommentsFailed(action.id, error));
+    }
   }
 }
 
 export function* getGalleryAlbumImagesAsync(action) {
   const gallery = yield select(getGallery, action.id);
-  if (gallery.get('isAlbum') === true) {
+
+  if (gallery && gallery.get('isAlbum') === true) {
     yield put(getGalleryAlbumImages(action.id));
     const { response, error } = yield call(fetchGalleryAlbumImages, action.id);
 
@@ -93,29 +109,30 @@ export function* getGalleryAlbumImagesAsync(action) {
 
 // WATCHERS
 export function* watchGetGalleries() {
-  yield takeEvery(GET_GALLERIES, getGalleriesAsync);
+  yield takeLatest(GET_GALLERIES, getGalleriesAsync);
 }
 
 export function* watchSearch() {
-  yield takeEvery(SEARCH, searchAsync);
+  yield takeLatest(SEARCH, searchAsync);
 }
 
 export function* watchLocationChange() {
-  yield takeEvery(LOCATION_CHANGE, logLocation);
+  yield takeLatest(LOCATION_CHANGE, logLocation);
 }
 
 export function* watchGalleryOpened() {
-  yield takeEvery(GALLERY_OPENED, getGalleryCommentsAsync);
-  yield takeEvery(GALLERY_OPENED, getGalleryAlbumImagesAsync);
+  yield takeLatest(GALLERY_OPENED, redirectIfGalleryNotExists);
+  yield takeLatest(GALLERY_OPENED, getGalleryCommentsAsync);
+  yield takeLatest(GALLERY_OPENED, getGalleryAlbumImagesAsync);
 }
 
 
 // ROOT SAGA
 export default function* rootSaga() {
-  yield [
+  yield all([
     watchGetGalleries(),
     watchSearch(),
     watchLocationChange(),
     watchGalleryOpened(),
-  ];
+  ]);
 }

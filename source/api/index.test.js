@@ -5,8 +5,6 @@ import MockAdapter from 'axios-mock-adapter';
 import {
   apiUrl,
   fetchGalleries,
-  fetchGalleryComments,
-  fetchGalleryAlbumImages,
 } from './index';
 
 describe('api/', () => {

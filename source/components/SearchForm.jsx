@@ -28,20 +28,27 @@ class SearchForm extends Component {
         onSubmit={ this.handleSearchSubmit }
       >
 
-        {/* INPUT FIELD */}
-        <input
-          className={ bem(b, 'input-field') }
-          onChange={ this.handleInputChange }
-          type='text'
-        />
+        {/* WRAPPER */}
+        <div className={ bem(b, 'wrapper') }>
 
-        {/* SUBMIT BUTTON */}
-        <button
-          className={ bem(b, 'submit-btn') }
-          type='submit'
-        >
-          Search
-        </button>
+          {/* INPUT FIELD */}
+          <input
+            className={ bem(b, 'input-field') }
+            onChange={ this.handleInputChange }
+            type='text'
+            placeholder='Search for particular polandballs...'
+          />
+
+          {/* SUBMIT BUTTON */}
+          <span className={ bem(b, 'submit') }>
+            <button
+              className={ bem(b, 'submit-btn') }
+              type='submit'
+            >
+              Search
+            </button>
+          </span>
+        </div>
       </form>
     );
   }
