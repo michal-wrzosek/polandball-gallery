@@ -3,10 +3,14 @@ import assert from 'assert';
 import {
   call,
   put,
-  takeLatest
+  takeLatest,
+  select,
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
-import { LOCATION_CHANGE } from 'react-router-redux';
+import {
+  LOCATION_CHANGE,
+  push,
+} from 'react-router-redux';
 import {
   fetchGalleries,
 } from '../api';
@@ -21,6 +25,7 @@ import {
   galleryOpened,
   homepageOpened,
 } from '../actions';
+import { getGallery } from '../selectors';
 import {
   watchGetGalleries,
   watchSearch,
@@ -29,9 +34,9 @@ import {
   getGalleriesAsync,
   searchAsync,
   logLocation,
-  redirectIfGalleryNotExists,
   getGalleryCommentsAsync,
   getGalleryAlbumImagesAsync,
+  redirectIfGalleryNotExists,
 } from './rootSaga';
 
 describe('sagas/rootSaga', () => {
@@ -277,12 +282,14 @@ describe('sagas/rootSaga', () => {
           payload: { pathname: '/galleries/zzsda' },
         };
         const gen = logLocation(action);
+
         it('should dispatch galleryOpened action', () => {
           assert.deepEqual(
             gen.next().value,
             put(galleryOpened('zzsda'))
           );
         });
+
         it('should be done', () => {
           assert.deepEqual(
             gen.next().done,
@@ -297,15 +304,58 @@ describe('sagas/rootSaga', () => {
           payload: { pathname: '/' },
         };
         const gen = logLocation(action);
+
         it('should dispatch homepageOpened action', () => {
           assert.deepEqual(
             gen.next().value,
             put(homepageOpened())
           );
         });
+
         it('should be done', () => {
           assert.deepEqual(
             gen.next().done,
+            true
+          );
+        });
+      });
+    });
+
+    describe('redirectIfGalleryNotExists()', () => {
+      const action = {
+        id: 'asasd',
+      };
+      const data = {};
+      data.gen = cloneableGenerator(redirectIfGalleryNotExists)(action);
+
+      it('should select gallery from store', () => {
+        assert.deepEqual(
+          data.gen.next().value,
+          select(getGallery, 'asasd')
+        );
+        data.clone = data.gen.clone();
+      });
+
+      describe('when gallery exists', () => {
+        it('should be done', () => {
+          assert.deepEqual(
+            data.gen.next({}).done,
+            true
+          );
+        });
+      });
+
+      describe("when gallery don't exists", () => {
+        it('should dispatch push action to open homepage', () => {
+          assert.deepEqual(
+            data.clone.next(false).value,
+            put(push('/'))
+          );
+        });
+        
+        it('should be done', () => {
+          assert.deepEqual(
+            data.clone.next().done,
             true
           );
         });
