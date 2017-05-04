@@ -6,6 +6,7 @@ import {
   takeLatest
 } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
+import { LOCATION_CHANGE } from 'react-router-redux';
 import {
   fetchGalleries,
 } from '../api';
@@ -20,8 +21,10 @@ import {
 import {
   watchGetGalleries,
   watchSearch,
+  watchLocationChange,
   getGalleriesAsync,
   searchAsync,
+  logLocation,
 } from './rootSaga';
 
 describe('sagas/rootSaga', () => {
@@ -51,6 +54,24 @@ describe('sagas/rootSaga', () => {
         assert.deepEqual(
           gen.next().value,
           takeLatest(SEARCH, searchAsync)
+        );
+      });
+
+      it('should be done', () => {
+        assert.deepEqual(
+          gen.next().done,
+          true
+        );
+      });
+    });
+
+    describe('watchLocationChange()', () => {
+      const gen = watchLocationChange();
+
+      it('should takeLatest LOCATION_CHANGE and call logLocation()', () => {
+        assert.deepEqual(
+          gen.next().value,
+          takeLatest(LOCATION_CHANGE, logLocation)
         );
       });
 
