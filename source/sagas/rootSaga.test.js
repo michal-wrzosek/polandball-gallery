@@ -12,6 +12,7 @@ import {
 } from '../api';
 import {
   GET_GALLERIES,
+  GALLERY_OPENED,
   SEARCH,
   getGalleriesSucceeded,
   getGalleriesFailed,
@@ -22,9 +23,13 @@ import {
   watchGetGalleries,
   watchSearch,
   watchLocationChange,
+  watchGalleryOpened,
   getGalleriesAsync,
   searchAsync,
   logLocation,
+  redirectIfGalleryNotExists,
+  getGalleryCommentsAsync,
+  getGalleryAlbumImagesAsync,
 } from './rootSaga';
 
 describe('sagas/rootSaga', () => {
@@ -79,6 +84,44 @@ describe('sagas/rootSaga', () => {
         assert.deepEqual(
           gen.next().done,
           true
+        );
+      });
+    });
+
+    describe('watchGalleryOpened()', () => {
+      const gen = watchGalleryOpened();
+
+      it('should watch GALLERY_OPENED and call redirectIfGalleryNotExists()',
+        () => {
+          assert.deepEqual(
+            gen.next().value,
+            takeLatest(GALLERY_OPENED, redirectIfGalleryNotExists)
+          );
+        }
+      );
+
+      it('should watch GALLERY_OPENED and call getGalleryCommentsAsync()',
+        () => {
+          assert.deepEqual(
+            gen.next().value,
+            takeLatest(GALLERY_OPENED, getGalleryCommentsAsync)
+          );
+        }
+      );
+
+      it('should watch GALLERY_OPENED and call getGalleryAlbumImagesAsync()',
+        () => {
+          assert.deepEqual(
+            gen.next().value,
+            takeLatest(GALLERY_OPENED, getGalleryAlbumImagesAsync)
+          );
+        }
+      );
+
+      it('should be done', () => {
+        assert.deepEqual(
+          gen.next().done,
+          true,
         );
       });
     });
