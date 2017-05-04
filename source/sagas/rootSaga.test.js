@@ -18,6 +18,8 @@ import {
   getGalleriesFailed,
   searchSucceeded,
   searchFailed,
+  galleryOpened,
+  homepageOpened,
 } from '../actions';
 import {
   watchGetGalleries,
@@ -262,6 +264,48 @@ describe('sagas/rootSaga', () => {
         it('should be done', () => {
           assert.deepEqual(
             data.clone.next().done,
+            true
+          );
+        });
+      });
+    });
+
+    describe('logLocation()', () => {
+      describe('when opened gallery', () => {
+        const action = {
+          type: LOCATION_CHANGE,
+          payload: { pathname: '/galleries/zzsda' },
+        };
+        const gen = logLocation(action);
+        it('should dispatch galleryOpened action', () => {
+          assert.deepEqual(
+            gen.next().value,
+            put(galleryOpened('zzsda'))
+          );
+        });
+        it('should be done', () => {
+          assert.deepEqual(
+            gen.next().done,
+            true
+          );
+        });
+      });
+
+      describe('when opened homepage', () => {
+        const action = {
+          type: LOCATION_CHANGE,
+          payload: { pathname: '/' },
+        };
+        const gen = logLocation(action);
+        it('should dispatch homepageOpened action', () => {
+          assert.deepEqual(
+            gen.next().value,
+            put(homepageOpened())
+          );
+        });
+        it('should be done', () => {
+          assert.deepEqual(
+            gen.next().done,
             true
           );
         });
