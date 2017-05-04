@@ -1,4 +1,5 @@
 import { describe, it } from 'mocha';
+import { Map } from 'immutable';
 import assert from 'assert';
 import {
   call,
@@ -13,6 +14,7 @@ import {
 } from 'react-router-redux';
 import {
   fetchGalleries,
+  fetchGalleryComments,
 } from '../api';
 import {
   GET_GALLERIES,
@@ -24,6 +26,9 @@ import {
   searchFailed,
   galleryOpened,
   homepageOpened,
+  getGalleryComments,
+  getGalleryCommentsSucceeded,
+  getGalleryCommentsFailed,
 } from '../actions';
 import { getGallery } from '../selectors';
 import {
@@ -339,7 +344,7 @@ describe('sagas/rootSaga', () => {
       describe('when gallery exists', () => {
         it('should be done', () => {
           assert.deepEqual(
-            data.gen.next({}).done,
+            data.gen.next(Map()).done,
             true
           );
         });
@@ -352,10 +357,84 @@ describe('sagas/rootSaga', () => {
             put(push('/'))
           );
         });
-        
+
         it('should be done', () => {
           assert.deepEqual(
             data.clone.next().done,
+            true
+          );
+        });
+      });
+    });
+
+    describe('getGalleryCommentsAsync()', () => {
+      const action = { id: 'sdfas' };
+      const data = {};
+      data.gen = cloneableGenerator(getGalleryCommentsAsync)(action);
+
+      it('should select gallery', () => {
+        assert.deepEqual(
+          data.gen.next().value,
+          select(getGallery, 'sdfas')
+        );
+        data.noGallery = data.gen.clone();
+      });
+
+      describe('when gallery exists', () => {
+        
+        it('should dispatch getGalleryComments()', () => {
+          assert.deepEqual(
+            data.gen.next(Map({ isAlbum: true })).value,
+            put(getGalleryComments('sdfas'))
+          );
+        });
+
+        it('should call fetchGalleryComments()', () => {
+          assert.deepEqual(
+            data.gen.next({}).value,
+            call(fetchGalleryComments, 'sdfas', true)
+          );
+          data.clone = data.gen.clone();
+        });
+        describe('when succeeded', () => {
+          it('should dispatch getGalleryCommentsSucceeded()', () => {
+            const successfulResponse = { response: { comments: [] } };
+            assert.deepEqual(
+              data.gen.next(successfulResponse).value,
+              put(getGalleryCommentsSucceeded('sdfas', []))
+            );
+          });
+
+          it('should be done', () => {
+            assert.deepEqual(
+              data.gen.next().done,
+              true
+            );
+          });
+        });
+
+        describe('when failed', () => {
+          it('should dispatch getGalleryCommentsFailed()', () => {
+            const failResponse = { error: 'ERROR!' };
+            assert.deepEqual(
+              data.clone.next(failResponse).value,
+              put(getGalleryCommentsFailed('sdfas', 'ERROR!'))
+            );
+          });
+
+          it('should be done', () => {
+            assert.deepEqual(
+              data.clone.next().done,
+              true
+            );
+          });
+        })
+      });
+
+      describe("when gallery don't exisits", () => {
+        it('should be done', () => {
+          assert.deepEqual(
+            data.noGallery.next(false).done,
             true
           );
         });

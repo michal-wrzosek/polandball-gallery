@@ -53,7 +53,7 @@ export const homepageOpened = () => ({
   type: HOMEPAGE_OPENED,
 });
 
-export const getGalleryComments = (id) => ({
+export const getGalleryComments = id => ({
   type: GET_GALLERY_COMMENTS,
   id,
 });
