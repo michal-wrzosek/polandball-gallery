@@ -2,6 +2,7 @@ import { describe, it } from 'mocha';
 import { Map } from 'immutable';
 import assert from 'assert';
 import {
+  all,
   call,
   put,
   takeLatest,
@@ -35,7 +36,7 @@ import {
   getGalleryAlbumImagesFailed,
 } from '../actions';
 import { getGallery } from '../selectors';
-import {
+import rootSaga, {
   watchGetGalleries,
   watchSearch,
   watchLocationChange,
@@ -49,6 +50,28 @@ import {
 } from './rootSaga';
 
 describe('sagas/rootSaga', () => {
+  describe('rootSaga()', () => {
+    const gen = rootSaga();
+    it('should run all watchers', () => {
+      assert.deepEqual(
+        gen.next().value,
+        all([
+          call(watchGetGalleries),
+          call(watchSearch),
+          call(watchLocationChange),
+          call(watchGalleryOpened),
+        ])
+      );
+    });
+
+    it('should be done', () => {
+      assert.deepEqual(
+        gen.next().done,
+        true
+      );
+    });
+  });
+
   describe('watchers', () => {
     describe('watchGetGalleries()', () => {
       const gen = watchGetGalleries();

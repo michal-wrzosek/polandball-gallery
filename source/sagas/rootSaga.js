@@ -130,9 +130,9 @@ export function* watchGalleryOpened() {
 // ROOT SAGA
 export default function* rootSaga() {
   yield all([
-    watchGetGalleries(),
-    watchSearch(),
-    watchLocationChange(),
-    watchGalleryOpened(),
+    call(watchGetGalleries),
+    call(watchSearch),
+    call(watchLocationChange),
+    call(watchGalleryOpened),
   ]);
 }
