@@ -15,6 +15,7 @@ import {
 import {
   fetchGalleries,
   fetchGalleryComments,
+  fetchGalleryAlbumImages,
 } from '../api';
 import {
   GET_GALLERIES,
@@ -29,6 +30,9 @@ import {
   getGalleryComments,
   getGalleryCommentsSucceeded,
   getGalleryCommentsFailed,
+  getGalleryAlbumImages,
+  getGalleryAlbumImagesSucceeded,
+  getGalleryAlbumImagesFailed,
 } from '../actions';
 import { getGallery } from '../selectors';
 import {
@@ -429,6 +433,90 @@ describe('sagas/rootSaga', () => {
             );
           });
         })
+      });
+
+      describe("when gallery don't exisits", () => {
+        it('should be done', () => {
+          assert.deepEqual(
+            data.noGallery.next(false).done,
+            true
+          );
+        });
+      });
+    });
+
+    describe('getGalleryAlbumImagesAsync()', () => {
+      const action = { id: 'sdfas' };
+      const data = {};
+      data.gen = cloneableGenerator(getGalleryAlbumImagesAsync)(action);
+
+      it('should select gallery', () => {
+        assert.deepEqual(
+          data.gen.next().value,
+          select(getGallery, 'sdfas')
+        );
+        data.noGallery = data.gen.clone();
+        data.notAnAlbum = data.gen.clone();
+      });
+
+      describe('when gallery exists and is an album', () => {
+        
+        it('should dispatch getGalleryAlbumImages()', () => {
+          assert.deepEqual(
+            data.gen.next(Map({ isAlbum: true })).value,
+            put(getGalleryAlbumImages('sdfas'))
+          );
+        });
+
+        it('should call fetchGalleryAlbumImages()', () => {
+          assert.deepEqual(
+            data.gen.next({}).value,
+            call(fetchGalleryAlbumImages, 'sdfas')
+          );
+          data.apiFail = data.gen.clone();
+        });
+        describe('when succeeded', () => {
+          it('should dispatch getGalleryAlbumImagesSucceeded()', () => {
+            const successfulResponse = { response: { images: [] } };
+            assert.deepEqual(
+              data.gen.next(successfulResponse).value,
+              put(getGalleryAlbumImagesSucceeded('sdfas', []))
+            );
+          });
+
+          it('should be done', () => {
+            assert.deepEqual(
+              data.gen.next().done,
+              true
+            );
+          });
+        });
+
+        describe('when failed', () => {
+          it('should dispatch getGalleryAlbumImagesFailed()', () => {
+            const failResponse = { error: 'ERROR!' };
+            assert.deepEqual(
+              data.apiFail.next(failResponse).value,
+              put(getGalleryAlbumImagesFailed('sdfas', 'ERROR!'))
+            );
+          });
+
+          it('should be done', () => {
+            assert.deepEqual(
+              data.apiFail.next().done,
+              true
+            );
+          });
+        })
+      });
+
+      describe("when gallery exists but not an album", () => {
+        it('should be done', () => {
+          assert.deepEqual(
+            data.notAnAlbum.next(Map({ isAlbum: false })).done,
+            true
+          );
+        });
       });
 
       describe("when gallery don't exisits", () => {

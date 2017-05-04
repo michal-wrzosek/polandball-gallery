@@ -101,7 +101,7 @@ export function* getGalleryAlbumImagesAsync(action) {
     if (response) {
       yield put(getGalleryAlbumImagesSucceeded(action.id, response.images));
     } else {
-      yield put(getGalleryAlbumImagesFailed, action.id, error);
+      yield put(getGalleryAlbumImagesFailed(action.id, error));
     }
   }
 }
