@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import bem from '../helpers/bem';
-import Menu from './Menu';
+import Menu from '../components/Menu';
 
 class App extends Component {
   constructor(props) {
