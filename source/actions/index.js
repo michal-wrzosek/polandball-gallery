@@ -19,32 +19,32 @@ export const getGalleries = (page, searchPhrase) => ({
   searchPhrase,
 });
 
-export const getGalleriesSucceeded = (galleries) => ({
+export const getGalleriesSucceeded = galleries => ({
   type: GET_GALLERIES_SUCCEEDED,
   galleries,
 });
 
-export const getGalleriesFailed = (error) => ({
+export const getGalleriesFailed = error => ({
   type: GET_GALLERIES_FAILED,
   error,
 });
 
-export const search = (searchPhrase) => ({
+export const search = searchPhrase => ({
   type: SEARCH,
   searchPhrase,
 });
 
-export const searchSucceeded = (galleries) => ({
+export const searchSucceeded = galleries => ({
   type: SEARCH_SUCCEEDED,
   galleries,
 });
 
-export const searchFailed = (error) => ({
+export const searchFailed = error => ({
   type: SEARCH_FAILED,
   error,
 });
 
-export const galleryOpened = (id) => ({
+export const galleryOpened = id => ({
   type: GALLERY_OPENED,
   id,
 });
