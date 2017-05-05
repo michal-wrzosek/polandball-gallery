@@ -10,7 +10,7 @@ import {
   GET_GALLERY_ALBUM_IMAGES_SUCCEEDED,
 } from '../actions';
 
-const initialState = Immutable.fromJS({
+export const initialState = Immutable.fromJS({
   list: [],
   keys: {},
   currentGallery: '',
@@ -22,7 +22,7 @@ const initialState = Immutable.fromJS({
 });
 
 const actionsMap = {
-  [GET_GALLERIES]: (state) => state.merge({
+  [GET_GALLERIES]: state => state.merge({
     isLoading: true,
     currentPage: state.get('currentPage') + 1,
   }),
@@ -71,7 +71,7 @@ const actionsMap = {
 
   [GALLERY_OPENED]: (state, action) => state.set('currentGallery', action.id),
 
-  [HOMEPAGE_OPENED]: (state) => state.set('currentGallery', ''),
+  [HOMEPAGE_OPENED]: state => state.set('currentGallery', ''),
 
   [GET_GALLERY_COMMENTS_SUCCEEDED]: (state, action) => state.setIn(
     ['galleryComments', action.id],
