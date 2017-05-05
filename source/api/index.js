@@ -47,7 +47,7 @@ const createImage = ({
   width,
   height,
   url: generateImageUrl(id),
-  urlThumb: generateImageUrl(id, 'b'),
+  thumbUrl: generateImageUrl(id, 'b'),
 });
 
 const parseGalleryImage = gallery => createGallery({
@@ -84,7 +84,7 @@ const parseFetchGalleriesResponse = galleries => galleries
   .map(i => (i.is_album ? parseGalleryAlbum(i) : parseGalleryImage(i)));
 
 const parseFetchGalleryComments = comments => comments
-  .map(comment => createComment(parseComment(comment)));
+  .map(comment => parseComment(comment));
 
 const parseFetchGalleryAlbumImages = galleryAlbum => galleryAlbum
   .images.map(image => parseImage(image));
