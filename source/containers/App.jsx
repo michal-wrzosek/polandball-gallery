@@ -27,7 +27,10 @@ class App extends Component {
 
         {/* MENU */}
         <div className={ bem(b, 'menu') }>
-          <Menu handleClick={ this.handleMenuClick } />
+          <Menu
+            elements={ [{ name: 'Polandballs', path: '/' }] }
+            handleClick={ this.handleMenuClick }
+          />
         </div>
 
         {/* CONTENT */}

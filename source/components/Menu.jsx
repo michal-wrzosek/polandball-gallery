@@ -2,24 +2,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import bem from '../helpers/bem';
 
-const Menu = ({ handleClick }) => {
+const Menu = ({ elements, handleClick }) => {
   const b = 'menu';
 
   return (
     <ul className={ bem(b) }>
-      <li className={ bem(b, 'link') }>
-        <a
-          onClick={ () => handleClick('/') }
-          className={ bem(b, 'link-a') }
+      {elements.map(element => 
+        <li
+          key={ element.path }
+          className={ bem(b, 'link') }
         >
-          Polandballs
-        </a>
-      </li>
+          <a
+            onClick={ () => handleClick(element.path) }
+            className={ bem(b, 'link-a') }
+          >
+            {element.name}
+          </a>
+        </li>
+      )}
     </ul>
   );
 };
 
 Menu.propTypes = {
+  elements: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+    path: PropTypes.string,
+  })).isRequired,
   handleClick: PropTypes.func.isRequired,
 };
 
