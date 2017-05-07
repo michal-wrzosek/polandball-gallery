@@ -6,16 +6,21 @@ This is very basic app where there is still soooo much to do but I already spent
 
 To run vm:
 `docker-compose up --build -d`
+
 Then:
 `docker-compose exec webpack bash`
 
 ---
 
 To run webpack server, inside docker app:
-`yarn run start`
+`yarn start`
 
 To lint:
 `yarn run lint`
 
 To run tests:
-`yarn run test`
+`yarn test`
+
+---
+
+Imgur might block hotlinking of images due to their TOS.
